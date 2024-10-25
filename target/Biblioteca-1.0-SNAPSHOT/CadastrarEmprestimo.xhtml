@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Cadastrar Emprestimo</title>
+
+    </h:head>
+    <h:body> 
+        <h:form>
+            <p:growl/>
+            <p:menubar>
+                <p:menuitem value="Home" icon="pi pi-fw pi-home" url="index.xhtml"/>
+            </p:menubar>
+            <hr/>
+            <h:panelGroup id="cadastrarEmprestimoPanelGroup">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <p:outputLabel value="Leitor: " />
+                            <p:autoComplete id="leitor" value="#{managerEmprestimo.emprestimo.leitor}"
+                                            completeMethod="#{managerEmprestimo.autocompleteLeitor(nome)}"
+                                            var="leitor" itemLabel="#{leitor.nome}" itemValue="#{leitor}" 
+                                            converter="leitorconverter" scrollHeight="250"/>
+
+                        </div>
+                    </div>
+                    <p:spacer height="20" />
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <p:outputLabel value="Livro: " />
+                            <p:autoComplete id="livro" value="#{managerEmprestimo.emprestimo.livro}"
+                                            completeMethod="#{managerEmprestimo.autocompleteLivro(titulo)}"
+                                            var="livro" itemLabel="#{livro.titulo}" itemValue="#{livro}" 
+                                            converter="livroconverter" scrollHeight="250"/>
+
+                        </div>
+                    </div>
+                    <p:spacer height="20" />
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <p:outputLabel for="dataEmprestimo" value="Data Emprestimo: " />
+                            <p:datePicker id="dataEmprestimo" value="#{managerEmprestimo.emprestimo.dataEmprestimo}" monthNavigator="true" yearNavigator="true" />
+
+                        </div>
+                    </div>
+                    <p:spacer height="20" />
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <p:outputLabel for="dataDevolucao" value="Data Devolução: " />
+                            <p:datePicker id="dataDevolucao" value="#{managerEmprestimo.emprestimo.dataDevolucao}" monthNavigator="true" yearNavigator="true" />
+
+                        </div>
+                    </div>
+                    <p:spacer height="30" />
+                    <p:commandButton value="Salvar" action="#{managerEmprestimo.registrarEmprestimo()}" update="@form" icon="pi pi-save" />
+                </div>
+            </h:panelGroup>
+        </h:form>
+    </h:body>
+</html>
+

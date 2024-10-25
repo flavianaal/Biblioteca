@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Gerenciamento de Biblioteca</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:growl id="growl"/>
+            <p:panel header="Gerenciamento de Biblioteca" toggleable="true" closable="true" toggleSpeed="500"
+                     closeSpeed="500" widgetVar="panel">
+                <p:menubar> 
+                    <p:submenu label="Livro" icon="pi pi-book">
+                        <p:menuitem value="Cadastrar Livro" icon=" pi pi-book" url="CadastrarLivro.xhtml"/>
+                        <p:menuitem value="Pequisar Livro disponiveis" icon=" pi pi-book" url="PesquisarLivroDisponivel.xhtml"/>
+
+                    </p:submenu>
+                    <p:submenu label="Leitor" icon="pi pi-face-smile">
+                        <p:menuitem value="Cadastrar Leitor" icon=" pi pi-face-smile" url="CadastrarLeitor.xhtml"/>
+                        <p:menuitem value="Listar Leitor" icon=" pi pi-face-smile" url="ListarLeitor.xhtml"/>
+                        
+                    </p:submenu>
+                    <p:submenu label="Emprestimo" icon="pi pi-book">
+                        <p:menuitem value="Emprestimo" icon=" pi pi-book" url="CadastrarEmprestimo.xhtml"/>
+
+                    </p:submenu>
+
+                </p:menubar>
+            </p:panel>
+        </h:form>
+    </h:body>
+</html>

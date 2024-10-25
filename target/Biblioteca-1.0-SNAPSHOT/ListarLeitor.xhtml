@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Gerenciamento de Biblioteca</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <p:growl id="growl"/>
+            <p:menubar>
+                <p:menuitem value="Home" icon="pi pi-fw pi-home" url="index.xhtml" />
+            </p:menubar>
+            <p:spacer height="20" />
+            <h:panelGroup id="listarleitorPanelGroup">
+                <div class="row">
+                    <h3>Listar Leitores</h3>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <p:outputLabel value="Nome: " for="nome"/>
+                            <p:inputText id="nome" value="#{managerLeitor.leitor.nome}" styleClass="form-control"/>
+                        </div>
+                    </div>
+            
+                </div>
+            </h:panelGroup>
+            <center style="margin: 10px">
+                <p:commandButton value="Pesquisar" actionListener="#{managerLeitor.pesquisar}" icon="pi pi-search" update="form:tablePanelGroup"/>
+                <p:spacer width="10"/>
+                <p:commandButton value="Limpar" action="#{managerLeitor.instanciar}" icon="pi pi-eraser" update="form"/>
+            </center>
+            <h:panelGroup id="tablePanelGroup">
+                <p:dataTable value="#{managerLeitor.leitores}" var="leitor" lazy="true" rows="10" paginator="true"
+                             paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros" rowsPerPageTemplate="5, 10, 20" emptyMessage="Nenhum registro encontrado." styleClass="my-md-3">
+                    <p:column headerText="Ações">
+                        <p:button icon="pi pi-pencil" title="Editar Leitor" href="CadastrarLeitor.xhtml?editar=#{leitor.id}"/>
+                    </p:column>
+                    <p:column headerText="Nome">
+                        <p:outputLabel value="#{leitor.nome}" />
+                    </p:column>
+                    <p:column headerText="Email">
+                        <p:outputLabel value="#{leitor.email}" />
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+    </h:body>
+</html>
