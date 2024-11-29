@@ -32,17 +32,18 @@ public class Leitor implements Serializable{
     private Long id;
     private String nome;
     private String email;
-    private Boolean ativo;
+    private Boolean ativo = true;
 
     public Leitor() {
     }
 
-    public Leitor(Long id, String nome, String email, Boolean ativo) {
+    public Leitor(Long id, String nome, String email) {
         this.id = id;
         this.nome = nome;
         this.email = email;
-        this.ativo = ativo;
     }
+
+    
 
     
     

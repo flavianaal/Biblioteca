@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package io.programe.manager;
 
 import io.programe.modelo.Emprestimo;
@@ -16,9 +12,8 @@ import jakarta.ejb.EJB;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
+import jakarta.persistence.EntityNotFoundException;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
@@ -26,10 +21,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-/**
- *
- * @author Flaviana Andrade
- */
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -40,113 +31,79 @@ public class ManagerEmprestimo implements Serializable {
 
     @EJB
     private EmprestimoServico emprestimoServico;
-
     @EJB
     private LivroServico livroServico;
     @EJB
     private LeitorServico leitorServico;
+
     private Livro livro;
     private Leitor leitor;
+    private Long livroId;
+    private Long leitorId;
     private Emprestimo emprestimo;
+    private List<Emprestimo> emprestimosAtivos;
 
     @PostConstruct
     public void instanciar() {
+
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String visualizar = params.get("visualizar");
         String editar = params.get("editar");
-        // Se o parâmetro visualizar ou editar estiver presente, carrega o funcionário e o endereço correspondentes
-        if (visualizar != null) {
-            leitor = leitorServico.find(Long.parseLong(visualizar));
-            livro = livroServico.findLivroById(livro.getId());
 
+        if (visualizar != null) {
+            emprestimo = emprestimoServico.find(Long.valueOf(visualizar));
         } else if (editar != null) {
-            leitor = leitorServico.find(Long.parseLong(visualizar));
-            livro = livroServico.findLivroById(livro.getId());
+            emprestimo = emprestimoServico.find(Long.valueOf(editar));
         } else {
-            // Caso contrário, inicializa um novo funcionário e endereço
-            livro = new Livro();
-            leitor = new Leitor();
             emprestimo = new Emprestimo();
         }
-        //escola.setEndereco(new Endereco());
-        emprestimo.setLivro(livro);
-        emprestimo.setLeitor(leitor);
+        emprestimo.setLivro(new Livro());
+        emprestimo.setLeitor(new Leitor());
+
+        listarEmprestimosAtivos();
     }
 
-    public boolean validarLeitorELivro(Leitor leitor, Livro livro) {
-        // Verifica se o leitor e o livro foram fornecidos e têm IDs válidos
-        if (leitor == null || leitor.getId() == null) {
-            Mensagem.msg("Leitor inválido ou ID do leitor não fornecido.");
-            return false;
-        }
-        if (livro == null || livro.getId() == null) {
-            Mensagem.msg("Livro inválido ou ID do livro não fornecido.");
-            return false;
-        }
-
-        // Busca o leitor e o livro no banco de dados
-        Leitor leitorBanco = leitorServico.findLeitorById(leitor.getId());
-        Livro livroBanco = livroServico.findLivroById(livro.getId());
-
-        // Verifica se o leitor e o livro existem e estão ativos
-        if (leitorBanco == null || !leitorBanco.getAtivo()) {
-            Mensagem.msg("Leitor inválido ou inativo.");
-            return false;
-        }
-        if (livroBanco == null || !livroBanco.getAtivo()) {
-            Mensagem.msg("Livro inválido ou inativo.");
-            return false;
-        }
-
-        return true; // Ambos são válidos e ativos
-    }
-
-    public void registrarEmprestimo() {
+    public void salvarEmprestimo() {
         try {
-            // Validar leitor e livro
-            if (!validarLeitorELivro(leitor, livro)) {
-                return; // Saia se a validação falhar
-            }
-
-            // Verificar disponibilidade do livro
-            if (!livroServico.isLivroDisponivel(livro.getId())) {
-                Mensagem.msg("Livro não está disponível para empréstimo.");
+            if (!emprestimo.getLivro().isDisponivel()) {
+                Mensagem.msg("Este livro já está emprestado e não pode ser emprestado novamente.");
                 return;
             }
 
-            // Continua o processo de registro de empréstimo
-            emprestimo.setLeitor(leitor);
-            emprestimo.setLivro(livro);
-            emprestimo.setDataEmprestimo(LocalDate.now());
-
-            // Atualiza a disponibilidade do livro
-            livro.setDisponivel(false);
-
-            // Salva o empréstimo e atualiza o livro
-            emprestimoServico.salvar(emprestimo);
-            livroServico.atualizar(livro);
-
-            Mensagem.msg("Empréstimo registrado com sucesso!");
-
+            if (emprestimo.getId() == null) {
+                emprestimo.setAtivo(true); // Marca o empréstimo como ativo
+                emprestimo.getLivro().setDisponivel(false); // Marca o livro como indisponível
+                livroServico.atualizar(emprestimo.getLivro()); // Certifique-se de que o livro seja atualizado no banco
+                emprestimoServico.salvar(emprestimo);
+                Mensagem.msg("Empréstimo realizado com sucesso!");
+            } else {
+                emprestimoServico.atualizar(emprestimo);
+                Mensagem.msg("Empréstimo atualizado com sucesso!");
+            }
         } catch (Exception e) {
-            Mensagem.msg("Erro ao registrar o empréstimo: " + e.getMessage());
-            e.printStackTrace();
+            Mensagem.msg("Erro ao salvar empréstimo: " + e.getMessage());
         } finally {
-            instanciar();
+            instanciar(); // Recarrega estado
         }
     }
 
-    // Método para devolver um livro
     public void devolverLivro(Emprestimo emprestimo) {
-        Livro livro = emprestimo.getLivro();
-        livro.setDisponivel(true); // Marca o livro como disponível
-        emprestimo.setDataDevolucao(LocalDate.now());
+        try {
+            emprestimoServico.registrarDevolucao(emprestimo.getId());
+            Mensagem.msg("Livro devolvido com sucesso!");
+        } catch (EntityNotFoundException e) {
+            Mensagem.msg("Erro: Empréstimo não encontrado.");
+        } catch (IllegalStateException e) {
+            Mensagem.msg(e.getMessage());
+        } catch (Exception e) {
+            Mensagem.msg("Erro inesperado ao devolver livro: " + e.getMessage());
+        } finally {
+            listarEmprestimosAtivos();
+        }
+    }
 
-        // Atualiza o empréstimo e o status do livro
-        emprestimoServico.atualizar(emprestimo);
-        livroServico.atualizar(livro);
-
-        Mensagem.msg("Livro devolvido com sucesso!");
+    public void listarEmprestimosAtivos() {
+        emprestimosAtivos = emprestimoServico.listarEmprestimosAtivos();
     }
 
     public List<Livro> autocompleteLivro(String titulo) {
@@ -158,9 +115,4 @@ public class ManagerEmprestimo implements Serializable {
         return emprestimoServico.findLeitor(nome);
 
     }
-
-    private Object getEntityManager() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
 }

@@ -4,13 +4,14 @@
  */
 package io.programe.modelo;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -28,18 +29,23 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Entity
-public class Emprestimo implements Serializable{
-    
+public class Emprestimo implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_emprestimo")
     @SequenceGenerator(name = "seq_emprestimo", sequenceName = "seq_emprestimo", initialValue = 1)
     private Long id;
+    @Column(nullable = false)
     private LocalDate dataEmprestimo;
     private LocalDate dataDevolucao;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) // Reduz carga desnecessária ao carregar empréstimos
+    @JoinColumn(name = "livro_id", nullable = false) // Garante a obrigatoriedade do livro
     private Livro livro;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "leitor_id", nullable = false) // Garante a obrigatoriedade do leitor
     private Leitor leitor;
+    @Column(nullable = false)
+    private boolean ativo = true; // Indica se o empréstimo está ativo
 
     public Emprestimo() {
     }
@@ -51,7 +57,5 @@ public class Emprestimo implements Serializable{
         this.livro = livro;
         this.leitor = leitor;
     }
-    
-    
-    
+
 }

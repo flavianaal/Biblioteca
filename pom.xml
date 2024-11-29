@@ -57,8 +57,24 @@
             <version>5.0.0</version>
             <classifier>jakarta</classifier>
         </dependency>-->
-
-
+        <dependency>
+            <groupId>com.kubukoz</groupId>
+            <artifactId>managed-core_2.12</artifactId>
+            <version>0.0.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.quantasnet.management</groupId>
+            <artifactId>Managed</artifactId>
+            <version>1.0.3</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.kubukoz</groupId>
+            <artifactId>managed-core_2.13</artifactId>
+            <version>0.0.1</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     
     <build>

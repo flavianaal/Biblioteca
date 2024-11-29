@@ -87,18 +87,31 @@ public class ManagerLivro implements Serializable {
         Mensagem.msg("Livro atualizado com sucesso!");
     }
 
-    // Atualizar status de livro para disponível após devolução
-    public void marcarComoDisponivel(Livro livro) {
-        livro.setDisponivel(true);
-        livroServico.atualizar(livro);
-        Mensagem.msg("Livro marcado como disponível!");
-    }
-
     public void pesquisar() {
         System.out.println("Titulo: " + livro.getTitulo());
         System.out.println("Autor: " + livro.getAutor().getNome());
         livrosDisponiveis = livroServico.listarLivrosDisponiveis(livro);
+        if (livrosDisponiveis.isEmpty()) {
+            Mensagem.msg("Nenhum livro disponível encontrado.");
+        }
 
+    }
+    
+    
+    // Atualizar status de livro para disponível após devolução
+    public void marcarComoDisponivel(Livro livro) {
+        livro.setDisponivel(true);
+        livroServico.atualizar(livro);
+        pesquisar();
+        Mensagem.msg("Livro marcado como disponível!");
+    }
+
+
+    public void emprestarLivro(Livro livro) {
+        livro.setDisponivel(false);
+        livroServico.atualizar(livro);
+        pesquisar(); // Atualiza a lista para refletir a alteração
+        Mensagem.msg("Livro emprestado com sucesso!");
     }
 
 }

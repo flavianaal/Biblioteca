@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Devolver Livro</title>
+    </h:head>
+
+    <h:body>
+        <h:form id="formDevolucao">
+
+            <p:growl id="messages" showDetail="true" />
+
+            <p:menubar>
+                <p:menuitem value="Home" icon="pi pi-fw pi-home" url="index.xhtml" />
+            </p:menubar>
+            <hr/>
+            <p:fieldset legend="Devolução de Livro">
+                <h:panelGroup id="devolverLivroPanelGroup">
+                    <div class="card">
+                        <!-- Tabela com os empréstimos ativos -->
+                        <p:dataTable value="#{managerEmprestimo.emprestimosAtivos}" var="emprestimo" editable="true">
+                            <p:column headerText="Leitor">
+                                <h:outputText value="#{emprestimo.leitor.nome}" />
+                            </p:column>
+                            <p:column headerText="Livro">
+                                <h:outputText value="#{emprestimo.livro.titulo}" />
+                            </p:column>
+                            <p:column headerText="Data de Empréstimo">
+                                <h:outputText value="#{emprestimo.dataEmprestimo}" />
+                            </p:column>
+
+                            <!-- Coluna para o botão de devolução -->
+                            <p:column headerText="Devolver">
+                                <p:commandButton value="Devolver" action="#{managerEmprestimo.devolverLivro(emprestimo)}"
+                                                 update="formDevolucao" ajax="true" />
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+
+                </h:panelGroup>
+            </p:fieldset>
+        </h:form>
+    </h:body>
+</html>

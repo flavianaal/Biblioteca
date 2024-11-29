@@ -30,7 +30,7 @@ public class LivroServico extends ServicoGenerico<Livro> {
 
     // Listar todos os livros disponíveis
     public List<Livro> listarLivrosDisponiveis(Livro livro) {
-        StringBuilder jpql = new StringBuilder("SELECT l FROM Livro l WHERE l.ativo = true AND l.disponivel = true");
+        StringBuilder jpql = new StringBuilder("SELECT l FROM Livro l WHERE l.ativo = true");
         List<String> conditions = new ArrayList<>();
 
         if (livro.getTitulo() != null && !livro.getTitulo().isEmpty()) {

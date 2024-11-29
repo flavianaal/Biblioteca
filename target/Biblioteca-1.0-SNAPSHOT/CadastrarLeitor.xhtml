@@ -15,26 +15,29 @@
                 <p:menuitem value="Home" icon="pi pi-fw pi-home" url="index.xhtml"/>
             </p:menubar>
             <hr/>
-            <h:panelGroup id="cadastrarLeitorPanelGroup">
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <p:outputLabel value="Nome: " />
-                            <p:inputText id="nome" value="#{managerLeitor.leitor.nome}" />
+            <p:fieldset legend="Cadastrar Leitor">
+                <h:panelGroup id="cadastrarLeitorPanelGroup">
+                    <div class="row" >
+                        <div class="col-md-6" >
+                            <div class="form-group">
+                                <p:outputLabel value="Nome: " />
+                                <p:inputText id="nome" value="#{managerLeitor.leitor.nome}" style='width:300px'/>
+                            </div>
                         </div>
-                    </div>
-                    <p:spacer height="20" />
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <p:outputLabel  value="Email: " />
-                            <p:inputText  id="email" value="#{managerLeitor.leitor.email}" label="Email"/>
+                        <p:spacer height="20" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <p:outputLabel  value="Email: " />
+                                <p:inputText oninput="formatEmail(this)"  placeholder="exemplo@dominio.com" id="email" value="#{managerLeitor.leitor.email}" label="Email" style='width:305px'/>
+                            </div>
                         </div>
+                        <p:spacer height="30" />
+                        <center>
+                            <p:commandButton value="Salvar" action="#{managerLeitor.criarLeitor()}" update="@form" icon="pi pi-save" />
+                        </center>
                     </div>
-                    <p:spacer height="30" />
-                    <p:commandButton value="Salvar" action="#{managerLeitor.criarLeitor()}" update="@form" icon="pi pi-save" />
-                </div>
-            </h:panelGroup>
+                </h:panelGroup>
+            </p:fieldset>
         </h:form>
     </h:body>
 </html>
